@@ -21,8 +21,8 @@ This is a single-file application. To run it:
 ### B. Grade Converter
 | Input Score | Expected Grade | Required Edge Case? |
 |-------------|----------------|---------------------|
-| *100* | A+             | [span_16](start_span)Yes[span_16](end_span)      |
-| *84* | A              | [span_17](start_span)Yes[span_17](end_span)       |
-| *65* | B+             | [span_18](start_span)Yes[span_18](end_span)       |
-| *49* | D              | [span_19](start_span)Yes[span_19](end_span)      |
-| *0* | D              | [span_20](start_span)Yes[span_20](end_span)      |
+| *100* |         A+                            Yes    
+| *84* |         A                              Yes      
+| *65* |         B+                             Yes       
+| *49* |        D                               Yes     
+| *0* |         D                                Yes
