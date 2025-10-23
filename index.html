@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ICT251: Quadratic Solver & Grade Converter</title>
+    <style>
+        /* Basic CSS for clarity and structure */
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .section { margin-bottom: 30px; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        .error { color: red; font-weight: bold; }
+        .result { margin-top: 10px; padding: 10px; background-color: #f0f0f0; border-radius: 3px; }
+        input[type="number"] { width: 100px; padding: 5px; margin-right: 10px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>ICT251: Quadratic Equation Solver and Grade Converter</h1>
+        [span_0](start_span)<p>A single-page web application to solve $ax^2 + bx + c = 0$ and convert numeric scores (0-100) to letter grades[span_0](end_span).</p>
+    </header>
+
+    <div class="section">
+        <h2>1. Quadratic Equation Solver ($ax^2 + bx + c = 0$)</h2>
+        <p>Enter the coefficients a, b, and c below. [span_1](start_span)Note: $a \ne 0$[span_1](end_span).</p>
+        <form id="quadratic-form">
+            <label for="a">Input 'a':</label>
+            <input type="number" id="a" required step="any">
+            <span id="a-error" class="error"></span><br><br>
+
+            <label for="b">Input 'b':</label>
+            <input type="number" id="b" required step="any"><br><br>
+
+            <label for="c">Input 'c':</label>
+            <input type="number" id="c" required step="any"><br><br>
+
+            <button type="button" onclick="solveQuadratic()">Compute Roots</button>
+            <button type="reset" onclick="clearQuadraticResults()">Reset/Clear</button>
+        </form>
+        <div class="result" id="quadratic-result"></div>
+    </div>
+
+    <hr>
+
+    <div class="section">
+        <h2>2. Numeric Score to Letter Grade Converter</h2>
+        [span_2](start_span)[span_3](start_span)<p>Enter a numeric score between 0 and 100 (inclusive)[span_2](end_span)[span_3](end_span).</p>
+        <form id="grading-form">
+            <label for="score">Input Score (0-100):</label>
+            <input type="number" id="score" min="0" max="100" required>
+            <span id="score-error" class="error"></span><br><br>
+
+            <button type="button" onclick="convertGrade()">Compute Grade</button>
+            <button type="reset" onclick="clearGradingResults()">Reset/Clear</button>
+        </form>
+        <div class="result" id="grading-result"></div>
+    </div>
+
+    <script>
+        // --- 1) Quadratic Solver Functions ---
+
+        function clearQuadraticResults() {
+            document.getElementById('quadratic-result').innerHTML = '';
+            document.getElementById('a-error').textContent = '';
+        }
+
+        function solveQuadratic() {
+            clearQuadraticResults();
+
+            [span_4](start_span)// Get inputs as floats (valid numbers validation is covered)[span_4](end_span)
+            const a = parseFloat(document.getElementById('a').value);
+            const b = parseFloat(document.getElementById('b').value);
+            const c = parseFloat(document.getElementById('c').value);
+
+            const resultDiv = document.getElementById('quadratic-result');
+            const aErrorSpan = document.getElementById('a-error');
+
+            [span_5](start_span)// Validation: Check if a is not equal to 0[span_5](end_span)
+            if (a === 0 || isNaN(a) || isNaN(b) || isNaN(c)) {
+                if (a === 0) {
+                    aErrorSpan.textContent = "Error: 'a' cannot be zero."; [span_6](start_span)// Clear, friendly error[span_6](end_span)
+                } else {
+                     aErrorSpan.textContent = "Error: All inputs must be valid numbers.";
+                }
+                resultDiv.innerHTML = '<span class="error">Please check your inputs and ensure $a \ne 0$.</span>';
+                return;
+            }
+
+            [span_7](start_span)// Calculation: Discriminant[span_7](end_span)
+            const D = b * b - 4 * a * c;
+            let output = **Discriminant ($D$)**: $D = b^2 - 4ac = **${D.toFixed(4)}**<br>;
+
+            [span_8](start_span)// Determine Nature of Roots[span_8](end_span)
+            if (D > 0) {
+                // Two distinct real roots
+                const x1 = (-b + Math.sqrt(D)) / (2 * a);
+                const x2 = (-b - Math.sqrt(D)) / (2 * a);
+                output += '*Nature of Roots*: Two distinct real roots ($D > 0$).<br>';
+                output += **Root 1 ($x_1$)**: ${x1.toFixed(4)}<br>; [span_9](start_span)// Sensible decimal places[span_9](end_span)
+                output += **Root 2 ($x_2$)**: ${x2.toFixed(4)}<br>;
+
+            } else if (D === 0) {
+                // One real repeated root
+                const x = -b / (2 * a);
+                output += '*Nature of Roots*: One real repeated root ($D = 0$).<br>';
+                output += **Root ($x$)**: ${x.toFixed(4)}<br>;
+
+            } else { // D < 0
+                // Two complex conjugate roots
+                const realPart = (-b / (2 * a)).toFixed(4);
+                const imaginaryPart = (Math.sqrt(-D) / (2 * a)).toFixed(4);
+                output += '*Nature of Roots*: Two complex conjugate roots ($D < 0$).<br>';
+                output += **Root 1 ($x_1$)**: ${realPart} + ${imaginaryPart}i<br>;
+                output += **Root 2 ($x_2$)**: ${realPart} - ${imaginaryPart}i<br>;
+            }
+
+            resultDiv.innerHTML = output;
+        }
+
+
+        // --- 2) Grading System Functions ---
+
+        function clearGradingResults() {
+            document.getElementById('grading-result').innerHTML = '';
+            document.getElementById('score-error').textContent = '';
+        }
+
+        function convertGrade() {
+            clearGradingResults();
+
+            const scoreInput = document.getElementById('score');
+            const score = parseInt(scoreInput.value);
+            const resultDiv = document.getElementById('grading-result');
+            const scoreErrorSpan = document.getElementById('score-error');
+
+            [span_10](start_span)// Validation: Check if score is empty or out of the [0, 100] range[span_10](end_span)
+            if (scoreInput.value === '' || isNaN(score) || score < 0 || score > 100) {
+                scoreErrorSpan.textContent = 'Error: Score must be an integer 0-100.'; [span_11](start_span)// Show error[span_11](end_span)
+                resultDiv.innerHTML = '<span class="error">Invalid input. Please enter a score from 0 to 100.</span>';
+                return;
+            }
+
+            [span_12](start_span)// Determine Grade using the exact inclusive ranges[span_12](end_span)
+            let grade = '';
+
+            if (score >= 85) { // 85-100 -> A+
+                grade = 'A+';
+            } else if (score >= 75) { // 75-84 -> A
+                grade = 'A';
+            } else if (score >= 65) { // 65-74 -> B+
+                grade = 'B+';
+            } else if (score >= 60) { // 60-64 -> B
+                grade = 'B';
+            } else if (score >= 55) { // 55-59 -> C+
+                grade = 'C+';
+            } else if (score >= 50) { // 50-54 -> C
+                grade = 'C';
+            } else { // 0-49 -> D
+                grade = 'D';
+            }
+
+            [span_13](start_span)// Output format: "Score 82 -> Grade A"[span_13](end_span)
+            resultDiv.innerHTML = Score ${score} &rightarrow; **Grade ${grade}**;
+        }
+    </script>
+
+</body>
+</html>
